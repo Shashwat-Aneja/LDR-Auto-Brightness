@@ -1,0 +1,50 @@
+====================================================================
+                LDR AUTO-BRIGHTNESS CONTROLLER (ASCII v1.0)
+====================================================================
+
+                       +-----------------------+
+                       |        ARDUINO        |
+                       |                       |
+                       |   A0 <---- LDR Divider Output
+                       |                       |
+                       |   D9 -----> LED (PWM Output)
+                       |                       |
+                       |   5V -----> +5V Rail
+                       |   GND ----> Ground Rail
+                       +-----------------------+
+
+
+                     LDR + Resistor Voltage Divider
+                     --------------------------------
+
+             +5V  ----------------------------------------+
+                                                          |
+                                                          |
+                                                      [ LDR ]
+                                                          |
+                                                          |
+                                Divider Output ---------->+----> A0
+                                                          |
+                                                          |
+                                                      [10kΩ Resistor]
+                                                          |
+                                                          |
+            GND  -----------------------------------------+
+
+
+                              LED (PWM Control)
+                              -----------------
+
+            Arduino D9  ----->|----[ 220Ω Resistor ]-----> LED -----> GND
+                               \
+                                >  PWM Signal (0–255)
+                               /
+
+
+====================================================================  
+Notes:
+- LDR must be used with a 10kΩ resistor to form a voltage divider.
+- Divider output connects to A0 for analogRead().
+- LED must have a 220Ω resistor in series to prevent overcurrent.
+- PWM pin D9 controls LED brightness (0–255 duty cycle).
+====================================================================
