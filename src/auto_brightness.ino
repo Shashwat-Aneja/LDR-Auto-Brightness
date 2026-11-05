@@ -1,18 +1,21 @@
 /*
-  LDR Auto-Brightness Controller (v1.0)
+  LDR Auto-Brightness Controller (v1.1)
   -------------------------------------
-  Automatically adjusts LED brightness based on ambient light using an 
-  LDR sensor. Demonstrates analog sensing, PWM output, and smooth brightness
-  control. Designed as a small embedded-systems project for academic use.
+  Automatically adjusts LED brightness based on ambient light using an
+  LDR sensor. A low-pass filter prevents small ADC fluctuations from
+  causing visible brightness flicker.
 */
 
-// Pin Definitions
-const int ldrPin = A0;     // Analog input from LDR voltage divider
-const int ledPin = 9;      // PWM output for LED brightness (D9 supports PWM)
+#include "BrightnessFilter.h"
 
-// Variables
-int sensorValue = 0;       // Raw LDR reading (0–1023)
-int brightness = 0;        // PWM value (0–255)
+// Pin Definitions
+const int ldrPin = A0;
+const int ledPin = 9;
+
+// Sensor and output values
+int sensorValue = 0;
+int brightness = 0;
+BrightnessFilter brightnessFilter(0.2f);
 
 void setup() {
   Serial.begin(9600);
@@ -23,19 +26,15 @@ void setup() {
 }
 
 void loop() {
-  // Read LDR value
   sensorValue = analogRead(ldrPin);
+  brightness = brightnessFilter.update(sensorValue);
 
-  // Convert 0–1023 to 0–255 PWM range
-  brightness = map(sensorValue, 0, 1023, 255, 0);
-  // (In bright light: high input → dim LED; In darkness: low input → bright LED)
-
-  // Apply brightness to LED
   analogWrite(ledPin, brightness);
 
-  // Debug information
   Serial.print("LDR: ");
   Serial.print(sensorValue);
+  Serial.print(" | Filtered: ");
+  Serial.print(brightnessFilter.filteredSensorValue(), 1);
   Serial.print(" | Brightness: ");
   Serial.println(brightness);
 
