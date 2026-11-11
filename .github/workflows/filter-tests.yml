@@ -1,0 +1,19 @@
+name: C++ filter tests
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  native-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile and run all filter tests
+        run: |
+          set -eu
+          for source in tests/*_test.cpp; do
+            binary="$(mktemp)"
+            g++ -std=c++11 -Wall -Wextra -Werror "$source" -o "$binary"
+            "$binary"
+            rm -f "$binary"
+          done
