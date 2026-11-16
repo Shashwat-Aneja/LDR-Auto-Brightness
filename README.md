@@ -70,3 +70,5 @@ static float smooth = 0;
 smooth = 0.85 * smooth + 0.15 * sensorValue;
 int smoothBrightness = map((int)smooth, 0, 1023, 255, 0);
 analogWrite(ledPin, smoothBrightness);
+
+For sensor reconnects or recalibration, call `brightnessFilter.reset()`. The next sample initializes immediately; subsequent samples retain the configured smoothing factor. Host test: `c++ -std=c++11 tests/brightness_filter_reset_test.cpp -o /tmp/brightness-reset && /tmp/brightness-reset`.

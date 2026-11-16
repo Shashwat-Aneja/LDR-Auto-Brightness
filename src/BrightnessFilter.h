@@ -35,6 +35,13 @@ public:
         return brightness;
     }
 
+    // Reset after a sensor reconnect or calibration so stale history does not
+    // delay the first reading. The configured smoothing factor is preserved.
+    void reset() {
+        filteredSensorValue_ = 0.0f;
+        initialized_ = false;
+    }
+
     float filteredSensorValue() const {
         return filteredSensorValue_;
     }
